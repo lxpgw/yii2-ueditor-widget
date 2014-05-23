@@ -1,10 +1,6 @@
 <?php
 /**
- * Lepture Markdown Editor assets class file
- *
- * @author Evgeniy Kuzminov
- * @license MIT License
- * http://stdout.in
+ * 
  */
 namespace xj\ueditor;
 
