@@ -2,7 +2,8 @@
 
 namespace xj\ueditor;
 
-use yii\base\Widget;
+use xj\ueditor\UeditorAssets;
+use yii\widgets\InputWidget;
 use yii\helpers\Html;
 
 /**
@@ -15,38 +16,31 @@ use yii\helpers\Html;
  * ]);
  * ```
  */
-class Ueditor extends Widget
-{
-    /**
-     * @var string the tag to use to render the button
-     */
-    public $tagName = 'button';
-    /**
-     * @var string the button label
-     */
-    public $label = 'Button';
-    /**
-     * @var boolean whether the label should be HTML-encoded.
-     */
-    public $encodeLabel = true;
+class Ueditor extends InputWidget {
 
     /**
      * Initializes the widget.
      * If you override this method, make sure you call the parent implementation first.
      */
-    public function init()
-    {
+    public function init() {
         parent::init();
-        $this->clientOptions = false;
-        Html::addCssClass($this->options, 'btn');
+//        $this->clientOptions = false;
+//        Html::addCssClass($this->options, 'btn');
+        
+//        if (empty($this->id)) {
+//            $this->id = $this->hasModel() ? Html::getInputId($this->model, $this->attribute) : $this->getId();
+//        }
+        
     }
 
     /**
      * Renders the widget.
      */
-    public function run()
-    {
-        echo Html::tag($this->tagName, $this->encodeLabel ? Html::encode($this->label) : $this->label, $this->options);
-        $this->registerPlugin('button');
+    public function run() {
+//        echo Html::tag($this->tagName, $this->encodeLabel ? Html::encode($this->label) : $this->label, $this->options);
+//        $this->registerPlugin('button');
+//        UeditorAssets::register($this->view);
+
     }
+
 }
