@@ -2,6 +2,7 @@ yii2-ueditor-widget
 ===================
 
 ### example:
+```
 echo Ueditor::widget([
     'model' => $model,
     'attribute' => 'password',
@@ -10,4 +11,4 @@ echo Ueditor::widget([
         'autoFloatEnable' => true
     ],
 ]);
-
+```
