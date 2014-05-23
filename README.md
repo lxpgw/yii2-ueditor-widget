@@ -1,7 +1,7 @@
 yii2-ueditor-widget
 ===================
 
-example:
+### example:
 echo Ueditor::widget([
     'model' => $model,
     'attribute' => 'password',
