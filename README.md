@@ -1,4 +1,13 @@
 yii2-ueditor-widget
 ===================
 
-yii2-ueditor
+<?php
+echo Ueditor::widget([
+    'model' => $model,
+    'attribute' => 'password',
+    'jsOptions' => [
+        'autoHeightEnable' => true,
+        'autoFloatEnable' => true
+    ],
+]);
+?>

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * 
+ * Ueditor Assets
  */
 
 namespace xj\ueditor;
@@ -13,19 +13,26 @@ class UeditorAssets extends AssetBundle {
 
     public $sourcePath = '@xj-ueditor/assets';
     public $basePath = '@webroot/assets';
-    public $js = [
-        'ueditor.config.js',
-        'ueditor.all.js',
-    ];
+    public $js = [];
     public $css = [
-            //'css/editor.css',
+//'css/editor.css',
     ];
     public $depends = [
-            //'yii\web\JqueryAsset',
+//'yii\web\JqueryAsset',
     ];
+
+    private function getJs() {
+        return [
+            YII_DEBUG ? 'ueditor.config.js' : 'ueditor.config.min.js',
+            YII_DEBUG ? 'ueditor.all.js' : 'ueditor.all.min.js',
+        ];
+    }
 
     public function init() {
         Yii::setAlias('@xj-ueditor', __DIR__);
+        if (empty($this->js)) {
+            $this->js = $this->getJs();
+        }
         return parent::init();
     }
 
