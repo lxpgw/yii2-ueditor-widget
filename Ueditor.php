@@ -17,6 +17,7 @@ use yii\web\View;
  * echo Ueditor::widget([
  *  'model' => $model,
  *  'attribute' => 'content',
+ *  'style' => 'width:100%',
  *  'jsOptions' => [
  *    'autoHeightEnable' => true,
  *    'autoFloatEnable' => true
@@ -48,6 +49,12 @@ class Ueditor extends InputWidget {
     public $jsOptions = [];
 
     /**
+     * script tag style
+     * @var string
+     */
+    public $style;
+
+    /**
      * Initializes the widget.
      */
     public function init() {
@@ -66,13 +73,16 @@ class Ueditor extends InputWidget {
      */
     public function run() {
         UeditorAssets::register($this->view);
-        echo $this->getScriptContent($this->id, $this->value);
+        echo $this->getScriptContent();
         $this->registerScripts();
     }
 
-    public function getScriptContent($id, $content) {
+    public function getScriptContent() {
+        $id = $this->id;
+        $content = $this->value;
+        $style = $this->style ? " style=\"{$this->style}\"" : "";
         return <<<EOF
-<script id="{$id}" name="{$id}" type="text/plain">{$content}</script>
+<script id="{$id}" name="{$id}" type="text/plain"{$style}>{$content}</script>
 EOF;
     }
 
