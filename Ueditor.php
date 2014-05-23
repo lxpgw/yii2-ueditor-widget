@@ -1,9 +1,4 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
 
 namespace xj\ueditor;
 
@@ -11,19 +6,14 @@ use yii\base\Widget;
 use yii\helpers\Html;
 
 /**
- * Button renders a bootstrap button.
+ * Ueditor Widget
  *
  * For example,
  *
  * ```php
- * echo Button::widget([
- *     'label' => 'Action',
- *     'options' => ['class' => 'btn-lg'],
+ * echo Ueditor::widget([
  * ]);
  * ```
- * @see http://getbootstrap.com/javascript/#buttons
- * @author Antonio Ramirez <amigo.cobos@gmail.com>
- * @since 2.0
  */
 class Ueditor extends Widget
 {
