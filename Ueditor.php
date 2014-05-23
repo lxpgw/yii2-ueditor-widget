@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace xj\Ueditor;
+namespace xj\ueditor;
 
 use yii\base\Widget;
 use yii\helpers\Html;

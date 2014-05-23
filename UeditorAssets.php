@@ -6,7 +6,7 @@
  * @license MIT License
  * http://stdout.in
  */
-namespace xj;
+namespace xj\ueditor;
 
 use yii\web\AssetBundle;
 use yii;
