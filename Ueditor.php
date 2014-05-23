@@ -66,12 +66,11 @@ class Ueditor extends InputWidget {
      */
     public function run() {
         UeditorAssets::register($this->view);
-        echo $this->id . "<br />";
-        echo $this->getScriptBlock($this->id, $this->value);
+        echo $this->getScriptContent($this->id, $this->value);
         $this->registerScripts();
     }
 
-    public function getScriptBlock($id, $content) {
+    public function getScriptContent($id, $content) {
         return <<<EOF
 <script id="{$id}" name="{$id}" type="text/plain">{$content}</script>
 EOF;
