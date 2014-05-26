@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Ueditor Assets
+ * 
  */
 
 namespace xj\ueditor;
