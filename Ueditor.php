@@ -5,12 +5,12 @@ namespace xj\ueditor;
 use xj\ueditor\UeditorAssets;
 use yii\widgets\InputWidget;
 use yii\helpers\Html;
-use yii\helpers\Inflector;
 use yii\helpers\Json;
 use yii\web\View;
 
 /**
  * Ueditor Widget
+<<<<<<< HEAD
  *
  * For example,
  *
@@ -26,33 +26,59 @@ use yii\web\View;
  * 
  * 
  * 
+=======
+>>>>>>> FETCH_HEAD
  */
 class Ueditor extends InputWidget {
 
     /**
-     * Editor Default Id
+     * UE初始化目标ID
      * @var string 
      */
     public $id;
 
     /**
-     * Editor Default Value
+     * UE默认值
      * @var string 
      */
     public $value;
 
     /**
-     * ueditor options 
-     * 
+     * 表单字段名
+     * @var string 
+     */
+    public $name;
+    
+    /**
+     * Tag/ScriptTag HtmlStyle
+     * @var style
+     */
+    public $style;
+    
+    /**
+     * 是否渲染Tag
+     * @var string/bool
+     */
+    public $renderTag = true;
+   
+    /**
+     * UE 参数
      * @var array
      */
     public $jsOptions = [];
 
     /**
-     * script tag style
-     * @var string
+     * UE.ready(function(){
+     * //nothing
+     * //alert('editor ready');
+     * });
+     * @var string 
      */
+<<<<<<< HEAD
     public $style;
+=======
+    public $readyEvent;
+>>>>>>> FETCH_HEAD
 
     /**
      * Initializes the widget.
@@ -62,10 +88,16 @@ class Ueditor extends InputWidget {
         if (empty($this->id)) {
             $this->id = $this->hasModel() ? Html::getInputId($this->model, $this->attribute) : $this->getId();
         }
-        if (empty($this->value))
-            if ($this->hasModel())
-                if (property_exists($this->model, $this->attribute))
+        if (empty($this->name)) {
+            $this->name = $this->hasModel() ? Html::getInputName($this->model, $this->attribute) : $this->id;
+        }
+        if (empty($this->value)) {
+            if ($this->hasModel()) {
+                if (property_exists($this->model, $this->attribute)) {
                     $this->value = $this->model[$this->attribute];
+                }
+            }
+        }
     }
 
     /**
@@ -73,25 +105,36 @@ class Ueditor extends InputWidget {
      */
     public function run() {
         UeditorAssets::register($this->view);
+<<<<<<< HEAD
         echo $this->getScriptContent();
         $this->registerScripts();
+=======
+        $this->registerScripts();
+
+        if ($this->renderTag) {
+            echo $this->renderTag();
+        }
+>>>>>>> FETCH_HEAD
     }
 
-    public function getScriptContent() {
+    public function renderTag() {
         $id = $this->id;
         $content = $this->value;
-        $style = $this->style ? " style=\"{$this->style}\"" : "";
+        $name = $this->name;
+        $style = $this->style ? " style=\"{$this->style}\"" : '';
         return <<<EOF
-<script id="{$id}" name="{$id}" type="text/plain"{$style}>{$content}</script>
+<script id="{$id}" name="{$name}"$style type="text/plain">{$content}</script>
 EOF;
     }
 
     public function registerScripts() {
         $jsonOptions = Json::encode($this->jsOptions);
-        $varName = Inflector::classify('ue_' . $this->id);
-        $script = "var {$varName} = UE.getEditor('{$this->id}', " . $jsonOptions . ");";
-        echo Html::tag('div', '', ['id' => $this->id]);
-        $this->view->registerJs($script, View::POS_END);
+        $script = "UE.getEditor('{$this->id}', " . $jsonOptions . ")";
+        if ($this->readyEvent) {
+            $script .= ".ready(function(){{$this->readyEvent}})";
+        }
+        $script .= ';';
+        $this->view->registerJs($script, View::POS_READY);
     }
 
 }

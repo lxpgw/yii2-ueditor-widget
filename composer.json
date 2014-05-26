@@ -8,10 +8,8 @@
             "email": "xjflyttp@gmail.com"
         }
     ],
-    "version": "1.4.2",
-    "minimum-stability": "dev",
     "require": {
-        "yiisoft/yii2": "*"
+        "xj/ueditor": "*"
     },
     "autoload": {
         "psr-4": {
