@@ -1,7 +1,16 @@
 yii2-ueditor-widget
 ===================
 
+composer.json
+===================
+````````
+"require": {
+        "xj/yii2-ueditor-widget": "*"
+},
+````````
+
 ### example:
+==================
 ```
 <?php
 //外部TAG
