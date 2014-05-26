@@ -9,7 +9,7 @@ composer.json
 },
 ````````
 
-### example:
+example:
 ==================
 ```
 <?php
@@ -17,7 +17,8 @@ composer.json
 echo Html::tag('script', $model->username, [
     'id' => Html::getInputId($model, 'username'),
     'name' => Html::getInputName($model, 'username'),
-    'type' => 'text/plain']);
+    'type' => 'text/plain',
+]);
 echo Ueditor::widget([
     'model' => $model,
     'renderTag' => false,
