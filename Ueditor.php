@@ -71,8 +71,8 @@ class Ueditor extends InputWidget {
         }
         if (empty($this->value)) {
             if ($this->hasModel()) {
-                if (property_exists($this->model, $this->attribute)) {
-                    $this->value = $this->model[$this->attribute];
+                if ($this->model->hasAttribute($this->attribute)) {
+                    $this->value = $this->model->getAttribute($this->attribute);
                 }
             }
         }
