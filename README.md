@@ -1,20 +1,18 @@
 yii2-ueditor-widget
 ===================
 
-### example:
-```
-=======
+
 composer.json
-===================
-````````
+-----
+```json
 "require": {
         "xj/yii2-ueditor-widget": "*"
 },
-````````
+```
 
 example:
-==================
-```
+-----
+```php
 <?php
 //外部TAG
 echo Html::tag('script', $model->username, [
@@ -53,7 +51,9 @@ echo Ueditor::widget([
 ?>
 ```
 
-````php
+Action:
+----
+```php
 public function actions() {
 return [
     'upload' => [
@@ -79,4 +79,4 @@ return [
     ],
 ];
 }
-```````
+```
