@@ -1,7 +1,6 @@
 yii2-ueditor-widget
 ===================
 
-<<<<<<< HEAD
 ### example:
 ```
 =======
@@ -35,7 +34,7 @@ echo Ueditor::widget([
 ]);
 ?>
 
->>>>>>> FETCH_HEAD
+
 <?php
 //Widget直接渲染Tag
 echo Ueditor::widget([
@@ -44,11 +43,8 @@ echo Ueditor::widget([
     'name' => 'customName',
     'style' => 'height:400px;width:700px;',
     'attribute' => 'password',
-<<<<<<< HEAD
     'style' => 'width:100%',
-=======
     'readyEvent' => 'console.log("example2 ready")',
->>>>>>> FETCH_HEAD
     'jsOptions' => [
         'autoHeightEnable' => true,
         'autoFloatEnable' => true
@@ -56,3 +52,31 @@ echo Ueditor::widget([
 ]);
 ?>
 ```
+
+````php
+public function actions() {
+return [
+    'upload' => [
+        'class' => \xj\ueditor\actions\Upload::className(),
+        'uploadBasePath' => '@frontend/web/upload', //file system path
+        'uploadBaseUrl' => \common\helpers\Url::getWebUrlFrontend('upload'), //web path
+        'configPatch' => [
+            'imageMaxSize' => 102400, /* 上传大小限制，单位B */
+            'scrawlMaxSize' => 102400, /* 上传大小限制，单位B */
+            'imageManagerListPath' => '/', //图片列表
+            'fileManagerListPath' => '/', //文件列表
+        ],
+        'pathFormat' => [
+            'imagePathFormat' => '{yyyy}{mm}{dd}/{time}{rand:6}',
+            'scrawlPathFormat' => '{yyyy}{mm}{dd}/{time}{rand:6}',
+            'snapscreenPathFormat' => '{yyyy}{mm}{dd}/{time}{rand:6}',
+            'catcherPathFormat' => '{yyyy}{mm}{dd}/{time}{rand:6}',
+            'snapscreenPathFormat' => '{yyyy}{mm}{dd}/{time}{rand:6}',
+            'catcherPathFormat' => '{yyyy}{mm}{dd}/{time}{rand:6}',
+            'videoPathFormat' => '{yyyy}{mm}{dd}/{time}{rand:6}',
+            'filePathFormat' => '{yyyy}{mm}{dd}/{time}{rand:6}',
+        ],
+    ],
+];
+}
+```````
