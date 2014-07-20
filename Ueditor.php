@@ -10,24 +10,7 @@ use yii\web\View;
 
 /**
  * Ueditor Widget
-<<<<<<< HEAD
  *
- * For example,
- *
- * echo Ueditor::widget([
- *  'model' => $model,
- *  'attribute' => 'content',
- *  'style' => 'width:100%',
- *  'jsOptions' => [
- *    'autoHeightEnable' => true,
- *    'autoFloatEnable' => true
- *  ],
- * ]);
- * 
- * 
- * 
-=======
->>>>>>> FETCH_HEAD
  */
 class Ueditor extends InputWidget {
 
@@ -74,11 +57,7 @@ class Ueditor extends InputWidget {
      * });
      * @var string 
      */
-<<<<<<< HEAD
-    public $style;
-=======
     public $readyEvent;
->>>>>>> FETCH_HEAD
 
     /**
      * Initializes the widget.
@@ -105,16 +84,11 @@ class Ueditor extends InputWidget {
      */
     public function run() {
         UeditorAssets::register($this->view);
-<<<<<<< HEAD
-        echo $this->getScriptContent();
-        $this->registerScripts();
-=======
         $this->registerScripts();
 
         if ($this->renderTag) {
             echo $this->renderTag();
         }
->>>>>>> FETCH_HEAD
     }
 
     public function renderTag() {
