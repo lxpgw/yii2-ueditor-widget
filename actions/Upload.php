@@ -13,7 +13,7 @@ class Upload extends \yii\base\Action {
      */
     public $uploadBasePath = '@frontend/web/upload';
     public $uploadBaseUrl = '/web/upload';
-
+	public $csrf = true;
     /**
      *
       {filename} 会替换成原文件名,配置这项需要注意中文乱码问题
@@ -58,9 +58,9 @@ class Upload extends \yii\base\Action {
     public $currentPath;
 
     public function init() {
-        //关闭csrf
-        Yii::$app->request->enableCsrfValidation = false;
-        Yii::$app->request->enableCookieValidation = false;
+        //csrf状态
+        Yii::$app->request->enableCsrfValidation = $this->csrf;
+        Yii::$app->request->enableCookieValidation = $this->csrf;
         //当前目录
         $this->currentPath = dirname(__FILE__);
         return parent::init();

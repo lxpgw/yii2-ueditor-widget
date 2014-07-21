@@ -60,6 +60,7 @@ return [
         'class' => \xj\ueditor\actions\Upload::className(),
         'uploadBasePath' => '@frontend/web/upload', //file system path
         'uploadBaseUrl' => \common\helpers\Url::getWebUrlFrontend('upload'), //web path
+	'csrf' => true, //csrf校验
         'configPatch' => [
             'imageMaxSize' => 102400, /* 上传大小限制，单位B */
             'scrawlMaxSize' => 102400, /* 上传大小限制，单位B */
