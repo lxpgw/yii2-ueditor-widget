@@ -62,20 +62,22 @@ return [
         'uploadBaseUrl' => \common\helpers\Url::getWebUrlFrontend('upload'), //web path
 	'csrf' => true, //csrf校验
         'configPatch' => [
-            'imageMaxSize' => 102400, /* 上传大小限制，单位B */
-            'scrawlMaxSize' => 102400, /* 上传大小限制，单位B */
+            'imageMaxSize' => 500 * 1024, //图片
+            'scrawlMaxSize' => 500 * 1024, //涂鸦
+            'catcherMaxSize' => 500 * 1024, //远程
+            'videoMaxSize' => 1024 * 1024, //视频
+            'fileMaxSize' => 1024 * 1024, //文件
             'imageManagerListPath' => '/', //图片列表
             'fileManagerListPath' => '/', //文件列表
         ],
         'pathFormat' => [
-            'imagePathFormat' => '{yyyy}{mm}{dd}/{time}{rand:6}',
-            'scrawlPathFormat' => '{yyyy}{mm}{dd}/{time}{rand:6}',
-            'snapscreenPathFormat' => '{yyyy}{mm}{dd}/{time}{rand:6}',
-            'catcherPathFormat' => '{yyyy}{mm}{dd}/{time}{rand:6}',
-            'snapscreenPathFormat' => '{yyyy}{mm}{dd}/{time}{rand:6}',
-            'catcherPathFormat' => '{yyyy}{mm}{dd}/{time}{rand:6}',
-            'videoPathFormat' => '{yyyy}{mm}{dd}/{time}{rand:6}',
-            'filePathFormat' => '{yyyy}{mm}{dd}/{time}{rand:6}',
+            'imagePathFormat' => 'image/{yyyy}{mm}{dd}/{time}{rand:6}',
+            'scrawlPathFormat' => 'image/{yyyy}{mm}{dd}/{time}{rand:6}',
+            'snapscreenPathFormat' => 'image/{yyyy}{mm}{dd}/{time}{rand:6}',
+            'snapscreenPathFormat' => 'image/{yyyy}{mm}{dd}/{time}{rand:6}',
+            'catcherPathFormat' => 'image/{yyyy}{mm}{dd}/{time}{rand:6}',
+            'videoPathFormat' => 'video/{yyyy}{mm}{dd}/{time}{rand:6}',
+            'filePathFormat' => 'file/{yyyy}{mm}{dd}/{time}{rand:6}',
         ],
     ],
 ];
