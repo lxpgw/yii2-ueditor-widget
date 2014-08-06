@@ -1,62 +1,114 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
 
-namespace xj\Ueditor;
+namespace xj\ueditor;
 
-use yii\base\Widget;
+use xj\ueditor\UeditorAssets;
+use yii\widgets\InputWidget;
 use yii\helpers\Html;
+use yii\helpers\Json;
+use yii\web\View;
 
 /**
- * Button renders a bootstrap button.
+ * Ueditor Widget
  *
- * For example,
- *
- * ```php
- * echo Button::widget([
- *     'label' => 'Action',
- *     'options' => ['class' => 'btn-lg'],
- * ]);
- * ```
- * @see http://getbootstrap.com/javascript/#buttons
- * @author Antonio Ramirez <amigo.cobos@gmail.com>
- * @since 2.0
  */
-class Ueditor extends Widget
-{
+class Ueditor extends InputWidget {
+
     /**
-     * @var string the tag to use to render the button
+     * UE初始化目标ID
+     * @var string 
      */
-    public $tagName = 'button';
+    public $id;
+
     /**
-     * @var string the button label
+     * UE默认值
+     * @var string 
      */
-    public $label = 'Button';
+    public $value;
+
     /**
-     * @var boolean whether the label should be HTML-encoded.
+     * 表单字段名
+     * @var string 
      */
-    public $encodeLabel = true;
+    public $name;
+    
+    /**
+     * Tag/ScriptTag HtmlStyle
+     * @var style
+     */
+    public $style;
+    
+    /**
+     * 是否渲染Tag
+     * @var string/bool
+     */
+    public $renderTag = true;
+   
+    /**
+     * UE 参数
+     * @var array
+     */
+    public $jsOptions = [];
+
+    /**
+     * UE.ready(function(){
+     * //nothing
+     * //alert('editor ready');
+     * });
+     * @var string 
+     */
+    public $readyEvent;
 
     /**
      * Initializes the widget.
-     * If you override this method, make sure you call the parent implementation first.
      */
-    public function init()
-    {
+    public function init() {
         parent::init();
-        $this->clientOptions = false;
-        Html::addCssClass($this->options, 'btn');
+        if (empty($this->id)) {
+            $this->id = $this->hasModel() ? Html::getInputId($this->model, $this->attribute) : $this->getId();
+        }
+        if (empty($this->name)) {
+            $this->name = $this->hasModel() ? Html::getInputName($this->model, $this->attribute) : $this->id;
+        }
+        if (empty($this->value)) {
+            if ($this->hasModel()) {
+                if ($this->model->hasAttribute($this->attribute)) {
+                    $this->value = $this->model->getAttribute($this->attribute);
+                }
+            }
+        }
     }
 
     /**
      * Renders the widget.
      */
-    public function run()
-    {
-        echo Html::tag($this->tagName, $this->encodeLabel ? Html::encode($this->label) : $this->label, $this->options);
-        $this->registerPlugin('button');
+    public function run() {
+        UeditorAssets::register($this->view);
+        $this->registerScripts();
+
+        if ($this->renderTag) {
+            echo $this->renderTag();
+        }
     }
+
+    public function renderTag() {
+        $id = $this->id;
+        $content = $this->value;
+        $name = $this->name;
+        $style = $this->style ? " style=\"{$this->style}\"" : '';
+        return <<<EOF
+<script id="{$id}" name="{$name}"$style type="text/plain">{$content}</script>
+EOF;
+    }
+
+    public function registerScripts() {
+        $jsonOptions = Json::encode($this->jsOptions);
+        $script = "UE.getEditor('{$this->id}', " . $jsonOptions . ")";
+        if ($this->readyEvent) {
+            $script .= ".ready(function(){{$this->readyEvent}})";
+        }
+        $script .= ';';
+        $this->view->registerJs($script, View::POS_READY);
+    }
+
 }
