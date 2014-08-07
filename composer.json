@@ -9,11 +9,11 @@
         }
     ],
     "require": {
-        "xj/ueditor": "*"
+        "yiisoft/yii2": "*"
     },
     "autoload": {
         "psr-4": {
-                "xj\\ueditor\\": ""
+            "xj\\ueditor\\": ""
         }
     }
 }

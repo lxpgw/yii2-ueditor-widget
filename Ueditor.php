@@ -2,11 +2,11 @@
 
 namespace xj\ueditor;
 
-use xj\ueditor\UeditorAssets;
-use yii\widgets\InputWidget;
+use yii\web\View;
 use yii\helpers\Html;
 use yii\helpers\Json;
-use yii\web\View;
+use yii\widgets\InputWidget;
+use xj\ueditor\UeditorAssets;
 
 /**
  * Ueditor Widget
@@ -31,19 +31,19 @@ class Ueditor extends InputWidget {
      * @var string 
      */
     public $name;
-    
+
     /**
      * Tag/ScriptTag HtmlStyle
      * @var style
      */
     public $style;
-    
+
     /**
      * 是否渲染Tag
      * @var string/bool
      */
     public $renderTag = true;
-   
+
     /**
      * UE 参数
      * @var array
@@ -70,12 +70,8 @@ class Ueditor extends InputWidget {
         if (empty($this->name)) {
             $this->name = $this->hasModel() ? Html::getInputName($this->model, $this->attribute) : $this->id;
         }
-        if (empty($this->value)) {
-            if ($this->hasModel()) {
-                if ($this->model->hasAttribute($this->attribute)) {
-                    $this->value = $this->model->getAttribute($this->attribute);
-                }
-            }
+        if (empty($this->value) && $this->hasModel() && $this->model->hasAttribute($this->attribute)) {
+            $this->value = $this->model->getAttribute($this->attribute);
         }
     }
 
