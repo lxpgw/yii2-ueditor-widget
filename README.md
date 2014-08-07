@@ -15,17 +15,17 @@ example:
 ```php
 <?php
 //外部TAG
-echo Html::tag('script', $model->username, [
+echo \xj\ueditor\Html::tag('script', $model->username, [
     'id' => Html::getInputId($model, 'username'),
     'name' => Html::getInputName($model, 'username'),
     'type' => 'text/plain',
 ]);
 echo Ueditor::widget([
     'model' => $model,
-    'renderTag' => false,
     'attribute' => 'username',
-    'readyEvent' => 'console.log("example1 ready")',
+    'renderTag' => false,
     'jsOptions' => [
+        'serverUrl' => common\helpers\Url::to(['upload']),
         'autoHeightEnable' => true,
         'autoFloatEnable' => true
     ],
@@ -35,15 +35,16 @@ echo Ueditor::widget([
 
 <?php
 //Widget直接渲染Tag
-echo Ueditor::widget([
+echo \xj\ueditor\Ueditor::widget([
     'model' => $model,
-    'renderTag' => true,
-    'name' => 'customName',
-    'style' => 'height:400px;width:700px;',
     'attribute' => 'password',
-    'style' => 'width:100%',
+    'name' => 'customName',
+    'value' => 'content',
+    'style' => 'width:100%;height:400px',
+    'renderTag' => true,
     'readyEvent' => 'console.log("example2 ready")',
     'jsOptions' => [
+        'serverUrl' => yii\helpers\Url::to(['upload']),
         'autoHeightEnable' => true,
         'autoFloatEnable' => true
     ],
@@ -58,8 +59,8 @@ public function actions() {
 return [
     'upload' => [
         'class' => \xj\ueditor\actions\Upload::className(),
-        'uploadBasePath' => '@frontend/web/upload', //file system path
-        'uploadBaseUrl' => \common\helpers\Url::getWebUrlFrontend('upload'), //web path
+        'uploadBasePath' => '@webroot', //file system path
+        'uploadBaseUrl' => '@web', //web path
 	'csrf' => true, //csrf校验
         'configPatch' => [
             'imageMaxSize' => 500 * 1024, //图片
