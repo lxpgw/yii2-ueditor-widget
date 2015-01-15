@@ -70,8 +70,9 @@ class Ueditor extends InputWidget {
         if (empty($this->name)) {
             $this->name = $this->hasModel() ? Html::getInputName($this->model, $this->attribute) : $this->id;
         }
-        if (empty($this->value) && $this->hasModel() && $this->model->hasAttribute($this->attribute)) {
-            $this->value = $this->model->getAttribute($this->attribute);
+        $attributeName = $this->attribute;
+        if (empty($this->value) && $this->hasModel()) {
+            $this->value = $this->model->$attributeName;
         }
     }
 
