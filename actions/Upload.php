@@ -4,16 +4,18 @@ namespace xj\ueditor\actions;
 
 use Yii;
 use yii\helpers\Json;
+use yii\base\Action;
 
-class Upload extends \yii\base\Action {
+class Upload extends Action {
 
     /**
      * 上传基本目录
      * @var string 
      */
-    public $uploadBasePath = '@frontend/web/upload';
-    public $uploadBaseUrl = '/web/upload';
-	public $csrf = true;
+    public $uploadBasePath = '@webroot/upload';
+    public $uploadBaseUrl = '@web/upload';
+    public $csrf = true;
+
     /**
      *
       {filename} 会替换成原文件名,配置这项需要注意中文乱码问题
@@ -132,7 +134,7 @@ class Upload extends \yii\base\Action {
      * @return string
      */
     private function getUploadBaseUrl($url = '') {
-        return rtrim($this->uploadBaseUrl, '\\/') . '/' . $url;
+        return rtrim(Yii::getAlias($this->uploadBaseUrl), '\\/') . '/' . $url;
     }
 
     private function selector() {
