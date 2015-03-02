@@ -80,6 +80,23 @@ return [
             'videoPathFormat' => 'video/{yyyy}{mm}{dd}/{time}{rand:6}',
             'filePathFormat' => 'file/{yyyy}{mm}{dd}/{time}{rand:6}',
         ],
+        'beforeUpload' => function($action) {
+//          throw new \yii\base\Exception('error message'); //break
+        },
+        'afterUpload' => function($action) {
+            /*@var $action \xj\ueditor\actions\Upload */
+            
+            var_dump($action->result);
+            //  'state' => string 'SUCCESS' (length=7)
+            //  'url' => string '/attachment/201109/1425310269294251.jpg' (length=61)
+            //  'relativePath' => string '201109/1425310269294251.jpg' ()
+            //  'title' => string '1425310269294251.jpg' (length=20)
+            //  'original' => string 'Chrysanthemum.jpg' (length=17)
+            //  'type' => string '.jpg' (length=4)
+            //  'size' => int 879394
+            
+            throw new \yii\base\Exception('error message'); //break
+        },
     ],
 ];
 }

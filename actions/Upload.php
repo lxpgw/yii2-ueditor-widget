@@ -52,12 +52,32 @@ class Upload extends Action {
      */
     public $config = [];
     public $action; //request action name
-    public $callback; //jsonp name
+    public $jsonpCallback; //jsonp name
     /**
      * 当前目录
      * @var string 
      */
     public $currentPath;
+
+    /**
+     *
+     * @var []
+     */
+    public $result;
+
+    /**
+     * throw yii\base\Exception will break
+     * @var Closure
+     * beforeValidate($Upload)
+     */
+    public $beforeUpload;
+
+    /**
+     * throw yii\base\Exception will break
+     * @var Closure
+     * afterSave($Upload)
+     */
+    public $afterUpload;
 
     public function init() {
         //csrf状态
@@ -77,12 +97,12 @@ class Upload extends Action {
         $result = $this->selector();
 
         /* 输出结果 */
-        if ($this->callback) {
-            if (preg_match("/^[\w_]+$/", $this->callback)) {
-                $result = htmlspecialchars($this->callback) . '(' . $result . ')';
+        if ($this->jsonpCallback) {
+            if (preg_match("/^[\w_]+$/", $this->jsonpCallback)) {
+                $result = htmlspecialchars($this->jsonpCallback) . '(' . $result . ')';
             } else {
                 $result = Json::encode(array(
-                            'state' => 'callback参数不合法'
+                            'state' => 'jsonpCallback参数不合法'
                 ));
             }
         }
@@ -154,7 +174,9 @@ class Upload extends Action {
             case 'uploadvideo':
             /* 上传文件 */
             case 'uploadfile':
+
                 $result = $this->actionUpload($CONFIG);
+
                 break;
 
             /* 列出图片 */
@@ -181,7 +203,7 @@ class Upload extends Action {
     private function loadConfig() {
         $this->config = Json::decode(preg_replace("/\/\*[\s\S]+?\*\//", "", file_get_contents($this->currentPath . '/config.json')), true);
         $this->action = Yii::$app->getRequest()->get('action', null);
-        $this->callback = Yii::$app->getRequest()->get('callback', null);
+        $this->jsonpCallback = Yii::$app->getRequest()->get('jsonpCallback', null);
     }
 
     /**
@@ -274,7 +296,7 @@ class Upload extends Action {
         $path = $this->getUploadBasePath() . (substr($path, 0, 1) == "/" ? "" : "/") . $path;
         $files = $this->getfiles($path, $allowFiles);
         if (!count($files)) {
-            return json_encode(array(
+            return Json::encode(array(
                 "state" => "no match file",
                 "list" => array(),
                 "start" => $start,
@@ -293,7 +315,7 @@ class Upload extends Action {
 //}
 
         /* 返回数据 */
-        $result = json_encode(array(
+        $result = Json::encode(array(
             "state" => "SUCCESS",
             "list" => $list,
             "start" => $start,
@@ -304,6 +326,14 @@ class Upload extends Action {
     }
 
     private function actionUpload($CONFIG) {
+        try {
+            if (is_callable($this->beforeUpload)) {
+                call_user_func($this->beforeUpload, $this);
+            }
+        } catch (\yii\base\Exception $e) {
+            return Json::encode(['state' => $e->getMessage()]);
+        }
+
         /* 上传配置 */
         $base64 = "upload";
         switch (htmlspecialchars($this->action)) {
@@ -364,7 +394,19 @@ class Upload extends Action {
         /* 返回数据 */
         $result = $up->getFileInfo();
         if (isset($result['url'])) {
+            $result['relativePath'] = $result['url'];
             $result['url'] = $this->getUploadBaseUrl($result['url']);
+        }
+        //set to public for callback
+        $this->result = $result;
+        if ($result['state'] == 'SUCCESS') {
+            try {
+                if (is_callable($this->afterUpload)) {
+                    call_user_func($this->afterUpload, $this);
+                }
+            } catch (\yii\base\Exception $e) {
+                return Json::encode(['state' => $e->getMessage()]);
+            }
         }
         return Json::encode($result);
     }
