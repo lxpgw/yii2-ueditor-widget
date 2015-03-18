@@ -71,6 +71,7 @@ return [
             'imageManagerListPath' => '/', //图片列表
             'fileManagerListPath' => '/', //文件列表
         ],
+        // OR Closure
         'pathFormat' => [
             'imagePathFormat' => 'image/{yyyy}{mm}{dd}/{time}{rand:6}',
             'scrawlPathFormat' => 'image/{yyyy}{mm}{dd}/{time}{rand:6}',
@@ -80,6 +81,18 @@ return [
             'videoPathFormat' => 'video/{yyyy}{mm}{dd}/{time}{rand:6}',
             'filePathFormat' => 'file/{yyyy}{mm}{dd}/{time}{rand:6}',
         ],
+        
+        // For Closure
+        'pathFormat' => [
+            'imagePathFormat' => [$this, 'format'],
+            'scrawlPathFormat' => [$this, 'format'],
+            'snapscreenPathFormat' => [$this, 'format'],
+            'snapscreenPathFormat' => [$this, 'format'],
+            'catcherPathFormat' => [$this, 'format'],
+            'videoPathFormat' => [$this, 'format'],
+            'filePathFormat' => [$this, 'format'],
+        ],
+        
         'beforeUpload' => function($action) {
 //          throw new \yii\base\Exception('error message'); //break
         },
@@ -99,5 +112,14 @@ return [
         },
     ],
 ];
+}
+
+// for Closure Format
+public function format(\xj\ueditor\actions\Uploader $action) {
+    $fileext = $action->fileType;
+    $filehash = sha1(uniqid() . time());
+    $p1 = substr($filehash, 0, 2);
+    $p2 = substr($filehash, 2, 2);
+    return "{$p1}/{$p2}/{$filehash}.{$fileext}";
 }
 ```
