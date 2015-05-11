@@ -157,13 +157,34 @@ class Upload extends Action {
         return rtrim(Yii::getAlias($this->uploadBaseUrl), '\\/') . '/' . $url;
     }
 
+    private function getConfigJson() {
+        $config = $this->config;
+        $filterConfig =$this->filterCallback($config);
+        return Json::encode($filterConfig);
+    }
+
+    private function filterCallback($data) {
+        $out = [];
+        foreach ($data as $key => $val) {
+            if (is_callable($val)) {
+                continue;
+            }
+            if (is_array($val) || is_object($val)) {
+                $out[$key] = $this->filterCallback($val);
+                continue;
+            }
+            $out[$key] = $val;
+        }
+        return $out;
+    }
+
     private function selector() {
         $_GET['action'] = $this->action;
         $CONFIG = $this->config;
 
         switch ($this->action) {
             case 'config':
-                $result = Json::encode($this->config);
+                $result = $this->getConfigJson();
                 break;
 
             /* 上传图片 */
@@ -297,10 +318,10 @@ class Upload extends Action {
         $files = $this->getfiles($path, $allowFiles);
         if (!count($files)) {
             return Json::encode(array(
-                "state" => "no match file",
-                "list" => array(),
-                "start" => $start,
-                "total" => count($files)
+                        "state" => "no match file",
+                        "list" => array(),
+                        "start" => $start,
+                        "total" => count($files)
             ));
         }
 
@@ -316,10 +337,10 @@ class Upload extends Action {
 
         /* 返回数据 */
         $result = Json::encode(array(
-            "state" => "SUCCESS",
-            "list" => $list,
-            "start" => $start,
-            "total" => count($files)
+                    "state" => "SUCCESS",
+                    "list" => $list,
+                    "start" => $start,
+                    "total" => count($files)
         ));
 
         return $result;
