@@ -1,15 +1,13 @@
-<?php
-
-namespace xj\ueditor\actions;
+<?php namespace lxpgw\ueditor\actions;
 
 /**
- * Created by JetBrains PhpStorm.
- * User: taoqili
- * Date: 12-7-18
- * Time: 上午11: 32
- * UEditor编辑器通用上传类
+ * The source file of ueditor office demo
+ *
+ * @package lxpgw\ueditor\actions
+ * @version 0.1.0
  */
-class Uploader {
+class Uploader
+{
 
     public $fileField; //文件域名
     public $file; //文件上传对象
@@ -22,7 +20,7 @@ class Uploader {
     public $fileSize; //文件大小
     public $fileType; //文件类型
     public $stateInfo; //上传状态信息,
-    public $stateMap = array(//上传状态映射表，国际化用户需考虑此处数据的国际化
+    public $stateMap = array( //上传状态映射表，国际化用户需考虑此处数据的国际化
         "SUCCESS", //上传成功标记，在UEditor中内不可改变，否则flash判断会出错
         "文件大小超出 upload_max_filesize 限制",
         "文件大小超出 MAX_FILE_SIZE 限制",
@@ -41,7 +39,7 @@ class Uploader {
         "ERROR_UNKNOWN" => "未知错误",
         "ERROR_DEAD_LINK" => "链接不可用",
         "ERROR_HTTP_LINK" => "链接不是http链接",
-        "ERROR_HTTP_CONTENTTYPE" => "链接contentType不正确"
+        "ERROR_HTTP_CONTENTTYPE" => "链接contentType不正确",
     );
 
     /**
@@ -50,7 +48,8 @@ class Uploader {
      * @param array $config 配置项
      * @param bool $base64 是否解析base64编码，可省略。若开启，则$fileField代表的是base64编码的字符串表单名
      */
-    public function __construct($fileField, $config, $type = "upload") {
+    public function __construct($fileField, $config, $type = "upload")
+    {
         $this->fileField = $fileField;
         $this->config = $config;
         $this->type = $type;
@@ -69,7 +68,8 @@ class Uploader {
      * 上传文件的主处理方法
      * @return mixed
      */
-    private function upFile() {
+    private function upFile()
+    {
         $file = $this->file = $_FILES[$this->fileField];
         if (!$file) {
             $this->stateInfo = $this->getStateInfo("ERROR_FILE_NOT_FOUND");
@@ -116,9 +116,11 @@ class Uploader {
         }
 
         //移动文件
-        if (!(move_uploaded_file($file["tmp_name"], $this->filePath) && file_exists($this->filePath))) { //移动失败
+        if (!(move_uploaded_file($file["tmp_name"], $this->filePath) && file_exists($this->filePath))) {
+            //移动失败
             $this->stateInfo = $this->getStateInfo("ERROR_FILE_MOVE");
-        } else { //移动成功
+        } else {
+            //移动成功
             $this->stateInfo = $this->stateMap[0];
         }
     }
@@ -127,7 +129,8 @@ class Uploader {
      * 处理base64编码的图片上传
      * @return mixed
      */
-    private function upBase64() {
+    private function upBase64()
+    {
         $base64Data = $_POST[$this->fileField];
         $img = base64_decode($base64Data);
 
@@ -155,9 +158,11 @@ class Uploader {
         }
 
         //移动文件
-        if (!(file_put_contents($this->filePath, $img) && file_exists($this->filePath))) { //移动失败
+        if (!(file_put_contents($this->filePath, $img) && file_exists($this->filePath))) {
+            //移动失败
             $this->stateInfo = $this->getStateInfo("ERROR_WRITE_CONTENT");
-        } else { //移动成功
+        } else {
+            //移动成功
             $this->stateInfo = $this->stateMap[0];
         }
     }
@@ -166,7 +171,8 @@ class Uploader {
      * 拉取远程图片
      * @return mixed
      */
-    private function saveRemote() {
+    private function saveRemote()
+    {
         $imgUrl = htmlspecialchars($this->fileField);
         $imgUrl = str_replace("&amp;", "&", $imgUrl);
 
@@ -191,9 +197,9 @@ class Uploader {
         //打开输出缓冲区并获取远程图片
         ob_start();
         $context = stream_context_create(
-                array('http' => array(
-                        'follow_location' => false // don't follow redirects
-                    ))
+            array('http' => array(
+                'follow_location' => false, // don't follow redirects
+            ))
         );
         readfile($imgUrl, false, $context);
         $img = ob_get_contents();
@@ -224,9 +230,11 @@ class Uploader {
         }
 
         //移动文件
-        if (!(file_put_contents($this->filePath, $img) && file_exists($this->filePath))) { //移动失败
+        if (!(file_put_contents($this->filePath, $img) && file_exists($this->filePath))) {
+            //移动失败
             $this->stateInfo = $this->getStateInfo("ERROR_WRITE_CONTENT");
-        } else { //移动成功
+        } else {
+            //移动成功
             $this->stateInfo = $this->stateMap[0];
         }
     }
@@ -236,7 +244,8 @@ class Uploader {
      * @param $errCode
      * @return string
      */
-    private function getStateInfo($errCode) {
+    private function getStateInfo($errCode)
+    {
         return !$this->stateMap[$errCode] ? $this->stateMap["ERROR_UNKNOWN"] : $this->stateMap[$errCode];
     }
 
@@ -244,7 +253,8 @@ class Uploader {
      * 获取文件扩展名
      * @return string
      */
-    private function getFileExt() {
+    private function getFileExt()
+    {
         return strtolower(strrchr($this->oriName, '.'));
     }
 
@@ -252,8 +262,9 @@ class Uploader {
      * 重命名文件
      * @return string
      */
-    private function getFullName() {
-        if (is_callable($this->config["pathFormat"])|| is_array($this->config["pathFormat"])) {
+    private function getFullName()
+    {
+        if (is_callable($this->config["pathFormat"]) || is_array($this->config["pathFormat"])) {
             return call_user_func($this->config["pathFormat"], $this);
         }
         //替换日期事件
@@ -288,7 +299,8 @@ class Uploader {
      * 获取文件名
      * @return string
      */
-    private function getFileName() {
+    private function getFileName()
+    {
         return substr($this->filePath, strrpos($this->filePath, '/') + 1);
     }
 
@@ -296,7 +308,8 @@ class Uploader {
      * 获取文件完整路径
      * @return string
      */
-    private function getFilePath() {
+    private function getFilePath()
+    {
         $fullname = $this->fullName;
 
         /**
@@ -318,7 +331,8 @@ class Uploader {
      * 文件类型检测
      * @return bool
      */
-    private function checkType() {
+    private function checkType()
+    {
         return in_array($this->getFileExt(), $this->config["allowFiles"]);
     }
 
@@ -326,7 +340,8 @@ class Uploader {
      * 文件大小检测
      * @return bool
      */
-    private function checkSize() {
+    private function checkSize()
+    {
         return $this->fileSize <= ($this->config["maxSize"]);
     }
 
@@ -334,14 +349,15 @@ class Uploader {
      * 获取当前上传成功文件的各项信息
      * @return array
      */
-    public function getFileInfo() {
+    public function getFileInfo()
+    {
         return array(
             "state" => $this->stateInfo,
             "url" => $this->fullName,
             "title" => $this->fileName,
             "original" => $this->oriName,
             "type" => $this->fileType,
-            "size" => $this->fileSize
+            "size" => $this->fileSize,
         );
     }
 

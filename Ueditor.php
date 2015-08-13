@@ -1,34 +1,34 @@
-<?php
+<?php namespace lxpgw\ueditor;
 
-namespace xj\ueditor;
-
-use yii\web\View;
 use yii\helpers\Html;
 use yii\helpers\Json;
+use yii\web\View;
 use yii\widgets\InputWidget;
-use xj\ueditor\UeditorAssets;
 
 /**
  * Ueditor Widget
  *
+ * @package lxpgw\ueditor
+ * @version 0.1.0
  */
-class Ueditor extends InputWidget {
+class Ueditor extends InputWidget
+{
 
     /**
      * UE初始化目标ID
-     * @var string 
+     * @var string
      */
     public $id;
 
     /**
      * UE默认值
-     * @var string 
+     * @var string
      */
     public $value;
 
     /**
      * 表单字段名
-     * @var string 
+     * @var string
      */
     public $name;
 
@@ -55,14 +55,15 @@ class Ueditor extends InputWidget {
      * //nothing
      * //alert('editor ready');
      * });
-     * @var string 
+     * @var string
      */
     public $readyEvent;
 
     /**
      * Initializes the widget.
      */
-    public function init() {
+    public function init()
+    {
         parent::init();
         if (empty($this->id)) {
             $this->id = $this->hasModel() ? Html::getInputId($this->model, $this->attribute) : $this->getId();
@@ -79,7 +80,8 @@ class Ueditor extends InputWidget {
     /**
      * Renders the widget.
      */
-    public function run() {
+    public function run()
+    {
         UeditorAssets::register($this->view);
         $this->registerScripts();
 
@@ -88,7 +90,8 @@ class Ueditor extends InputWidget {
         }
     }
 
-    public function renderTag() {
+    public function renderTag()
+    {
         $id = $this->id;
         $content = $this->value;
         $name = $this->name;
@@ -98,7 +101,8 @@ class Ueditor extends InputWidget {
 EOF;
     }
 
-    public function registerScripts() {
+    public function registerScripts()
+    {
         $jsonOptions = Json::encode($this->jsOptions);
         $script = "UE.getEditor('{$this->id}', " . $jsonOptions . ")";
         if ($this->readyEvent) {

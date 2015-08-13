@@ -1,34 +1,45 @@
-<?php
-
-namespace xj\ueditor\actions;
+<?php namespace lxpgw\ueditor\actions;
 
 use Yii;
-use yii\helpers\Json;
 use yii\base\Action;
+use yii\helpers\Json;
 
-class Upload extends Action {
+/**
+ * @package lxpgw\ueditor\actions
+ * @version 0.1.0
+ */
+class Upload extends Action
+{
 
     /**
      * 上传基本目录
-     * @var string 
+     * @var string
      */
     public $uploadBasePath = '@webroot/upload';
+    /**
+     * The web url
+     * @var string
+     */
     public $uploadBaseUrl = '@web/upload';
+    /**
+     * If enable csrf validation
+     * @var boolean
+     */
     public $csrf = true;
 
     /**
      *
-      {filename} 会替换成原文件名,配置这项需要注意中文乱码问题
-      {rand:6} 会替换成随机数,后面的数字是随机数的位数
-      {time} 会替换成时间戳
-      {yyyy} 会替换成四位年份
-      {yy} 会替换成两位年份
-      {mm} 会替换成两位月份
-      {dd} 会替换成两位日期
-      {hh} 会替换成两位小时
-      {ii} 会替换成两位分钟
-      {ss} 会替换成两位秒
-      非法字符 \ : * ? " < > |
+     * {filename} 会替换成原文件名,配置这项需要注意中文乱码问题
+     * {rand:6} 会替换成随机数,后面的数字是随机数的位数
+     * {time} 会替换成时间戳
+     * {yyyy} 会替换成四位年份
+     * {yy} 会替换成两位年份
+     * {mm} 会替换成两位月份
+     * {dd} 会替换成两位日期
+     * {hh} 会替换成两位小时
+     * {ii} 会替换成两位分钟
+     * {ss} 会替换成两位秒
+     * 非法字符 \ : * ? " < > |
      * @var type
      */
     public $pathFormat = [
@@ -48,14 +59,14 @@ class Upload extends Action {
 
     /**
      * config.json to Array
-     * @var array 
+     * @var array
      */
     public $config = [];
     public $action; //request action name
     public $jsonpCallback; //jsonp name
     /**
      * 当前目录
-     * @var string 
+     * @var string
      */
     public $currentPath;
 
@@ -79,7 +90,8 @@ class Upload extends Action {
      */
     public $afterUpload;
 
-    public function init() {
+    public function init()
+    {
         //csrf状态
         Yii::$app->request->enableCsrfValidation = $this->csrf;
         Yii::$app->request->enableCookieValidation = $this->csrf;
@@ -88,7 +100,8 @@ class Upload extends Action {
         return parent::init();
     }
 
-    public function run() {
+    public function run()
+    {
         //加载配置
         $this->loadConfig();
         //对配置进行定制
@@ -102,7 +115,7 @@ class Upload extends Action {
                 $result = htmlspecialchars($this->jsonpCallback) . '(' . $result . ')';
             } else {
                 $result = Json::encode(array(
-                            'state' => 'jsonpCallback参数不合法'
+                    'state' => 'jsonpCallback参数不合法',
                 ));
             }
         }
@@ -115,7 +128,8 @@ class Upload extends Action {
      * @param string $name
      * @return bool
      */
-    private function hasConfig($name) {
+    private function hasConfig($name)
+    {
         return isset($this->config[$name]) ? true : false;
     }
 
@@ -124,7 +138,8 @@ class Upload extends Action {
      * @param string $name
      * @return string
      */
-    private function getConfig($name) {
+    private function getConfig($name)
+    {
         $result = '';
         if ($this->hasConfig($name)) {
             $result = $this->config[$name];
@@ -137,7 +152,8 @@ class Upload extends Action {
      * @param string $name
      * @param string $value
      */
-    private function setConfig($name, $value) {
+    private function setConfig($name, $value)
+    {
         $this->config[$name] = $value;
     }
 
@@ -145,7 +161,8 @@ class Upload extends Action {
      * 上传存储路径
      * @return string
      */
-    private function getUploadBasePath($url = '') {
+    private function getUploadBasePath($url = '')
+    {
         return rtrim(Yii::getAlias($this->uploadBasePath), '\\/') . '/' . $url;
     }
 
@@ -153,17 +170,20 @@ class Upload extends Action {
      * 上传WEB路径
      * @return string
      */
-    private function getUploadBaseUrl($url = '') {
+    private function getUploadBaseUrl($url = '')
+    {
         return rtrim(Yii::getAlias($this->uploadBaseUrl), '\\/') . '/' . $url;
     }
 
-    private function getConfigJson() {
+    private function getConfigJson()
+    {
         $config = $this->config;
-        $filterConfig =$this->filterCallback($config);
+        $filterConfig = $this->filterCallback($config);
         return Json::encode($filterConfig);
     }
 
-    private function filterCallback($data) {
+    private function filterCallback($data)
+    {
         $out = [];
         foreach ($data as $key => $val) {
             if (is_callable($val)) {
@@ -178,7 +198,8 @@ class Upload extends Action {
         return $out;
     }
 
-    private function selector() {
+    private function selector()
+    {
         $_GET['action'] = $this->action;
         $CONFIG = $this->config;
 
@@ -214,14 +235,15 @@ class Upload extends Action {
 
             default:
                 $result = Json::encode(array(
-                            'state' => '请求地址出错'
+                    'state' => '请求地址出错',
                 ));
                 break;
         }
         return $result;
     }
 
-    private function loadConfig() {
+    private function loadConfig()
+    {
         $this->config = Json::decode(preg_replace("/\/\*[\s\S]+?\*\//", "", file_get_contents($this->currentPath . '/config.json')), true);
         $this->action = Yii::$app->getRequest()->get('action', null);
         $this->jsonpCallback = Yii::$app->getRequest()->get('jsonpCallback', null);
@@ -230,11 +252,12 @@ class Upload extends Action {
     /**
      * 修正路径避免直接修改json config
      */
-    private function patchConfig() {
+    private function patchConfig()
+    {
         $uploadBasePath = $this->getUploadBasePath();
 
 //上传文件保存结构
-//"imagePathFormat": "/ueditor/php/upload/image/{yyyy}{mm}{dd}/{time}{rand:6}", /* 上传保存路径,可以自定义保存路径和文件名格式 */
+        //"imagePathFormat": "/ueditor/php/upload/image/{yyyy}{mm}{dd}/{time}{rand:6}", /* 上传保存路径,可以自定义保存路径和文件名格式 */
         foreach ($this->pathFormat as $key => $val) {
             $this->setConfig($key, $val);
         }
@@ -250,13 +273,14 @@ class Upload extends Action {
     /**
      * action_crawler.php
      */
-    private function actionCrawler($CONFIG) {
+    private function actionCrawler($CONFIG)
+    {
         /* 上传配置 */
         $config = array(
             "pathFormat" => $CONFIG['catcherPathFormat'],
             "maxSize" => $CONFIG['catcherMaxSize'],
             "allowFiles" => $CONFIG['catcherAllowFiles'],
-            "oriName" => "remote.png"
+            "oriName" => "remote.png",
         );
         $fieldName = $CONFIG['catcherFieldName'];
 
@@ -277,18 +301,19 @@ class Upload extends Action {
                 "size" => $info["size"],
                 "title" => htmlspecialchars($info["title"]),
                 "original" => htmlspecialchars($info["original"]),
-                "source" => htmlspecialchars($imgUrl)
+                "source" => htmlspecialchars($imgUrl),
             ));
         }
 
         /* 返回抓取数据 */
         return Json::encode(array(
-                    'state' => count($list) ? 'SUCCESS' : 'ERROR',
-                    'list' => $list
+            'state' => count($list) ? 'SUCCESS' : 'ERROR',
+            'list' => $list,
         ));
     }
 
-    private function actionList($CONFIG) {
+    private function actionList($CONFIG)
+    {
         /* 判断类型 */
         switch ($this->action) {
             /* 列出文件 */
@@ -318,10 +343,10 @@ class Upload extends Action {
         $files = $this->getfiles($path, $allowFiles);
         if (!count($files)) {
             return Json::encode(array(
-                        "state" => "no match file",
-                        "list" => array(),
-                        "start" => $start,
-                        "total" => count($files)
+                "state" => "no match file",
+                "list" => array(),
+                "start" => $start,
+                "total" => count($files),
             ));
         }
 
@@ -331,22 +356,23 @@ class Upload extends Action {
             $list[] = $files[$i];
         }
 //倒序
-//for ($i = $end, $list = array(); $i < $len && $i < $end; $i++){
-//    $list[] = $files[$i];
-//}
+        //for ($i = $end, $list = array(); $i < $len && $i < $end; $i++){
+        //    $list[] = $files[$i];
+        //}
 
         /* 返回数据 */
         $result = Json::encode(array(
-                    "state" => "SUCCESS",
-                    "list" => $list,
-                    "start" => $start,
-                    "total" => count($files)
+            "state" => "SUCCESS",
+            "list" => $list,
+            "start" => $start,
+            "total" => count($files),
         ));
 
         return $result;
     }
 
-    private function actionUpload($CONFIG) {
+    private function actionUpload($CONFIG)
+    {
         try {
             if (is_callable($this->beforeUpload)) {
                 call_user_func($this->beforeUpload, $this);
@@ -362,7 +388,7 @@ class Upload extends Action {
                 $config = array(
                     "pathFormat" => $CONFIG['imagePathFormat'],
                     "maxSize" => $CONFIG['imageMaxSize'],
-                    "allowFiles" => $CONFIG['imageAllowFiles']
+                    "allowFiles" => $CONFIG['imageAllowFiles'],
                 );
                 $fieldName = $CONFIG['imageFieldName'];
                 break;
@@ -371,7 +397,7 @@ class Upload extends Action {
                     "pathFormat" => $CONFIG['scrawlPathFormat'],
                     "maxSize" => $CONFIG['scrawlMaxSize'],
 //                    "allowFiles" => $CONFIG['scrawlAllowFiles'], //bug
-                    "oriName" => "scrawl.png"
+                    "oriName" => "scrawl.png",
                 );
                 $fieldName = $CONFIG['scrawlFieldName'];
                 $base64 = "base64";
@@ -380,7 +406,7 @@ class Upload extends Action {
                 $config = array(
                     "pathFormat" => $CONFIG['videoPathFormat'],
                     "maxSize" => $CONFIG['videoMaxSize'],
-                    "allowFiles" => $CONFIG['videoAllowFiles']
+                    "allowFiles" => $CONFIG['videoAllowFiles'],
                 );
                 $fieldName = $CONFIG['videoFieldName'];
                 break;
@@ -389,7 +415,7 @@ class Upload extends Action {
                 $config = array(
                     "pathFormat" => $CONFIG['filePathFormat'],
                     "maxSize" => $CONFIG['fileMaxSize'],
-                    "allowFiles" => $CONFIG['fileAllowFiles']
+                    "allowFiles" => $CONFIG['fileAllowFiles'],
                 );
                 $fieldName = $CONFIG['fileFieldName'];
                 break;
@@ -438,11 +464,16 @@ class Upload extends Action {
      * @param array $files
      * @return array
      */
-    private function getfiles($path, $allowFiles, &$files = array()) {
-        if (!is_dir($path))
+    private function getfiles($path, $allowFiles, &$files = array())
+    {
+        if (!is_dir($path)) {
             return null;
-        if (substr($path, strlen($path) - 1) != '/')
+        }
+
+        if (substr($path, strlen($path) - 1) != '/') {
             $path .= '/';
+        }
+
         $handle = opendir($path);
         while (false !== ($file = readdir($handle))) {
             if ($file != '.' && $file != '..') {
@@ -453,7 +484,7 @@ class Upload extends Action {
                     if (preg_match("/\.(" . $allowFiles . ")$/i", $file)) {
                         $files[] = array(
                             'url' => $this->getUploadBaseUrl(substr($path2, strlen($this->getUploadBasePath()))),
-                            'mtime' => filemtime($path2)
+                            'mtime' => filemtime($path2),
                         );
                     }
                 }

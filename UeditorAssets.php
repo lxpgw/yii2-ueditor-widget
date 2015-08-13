@@ -1,18 +1,33 @@
-<?php
+<?php namespace lxpgw\ueditor;
 
-namespace xj\ueditor;
-
-use Yii;
 use yii\web\AssetBundle;
 
-class UeditorAssets extends AssetBundle {
-
-    public $sourcePath = '@vendor/xj/yii2-ueditor-widget/assets';
-    public $basePath = '@webroot/assets';
+/**
+ * The assets bundle
+ *
+ * @package lxpgw\ueditor
+ * @version 0.1.0
+ */
+class UeditorAssets extends AssetBundle
+{
+    /**
+     * @inheritdoc
+     */
     public $js = [
         'ueditor.config.js',
         'ueditor.all.js',
     ];
+    /**
+     * @inheritdoc
+     */
     public $depends = ['yii\web\JqueryAsset'];
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        $this->sourcePath = __DIR__ . DIRECTORY_SEPARATOR . 'assets';
+        parent::init();
+    }
 
 }
